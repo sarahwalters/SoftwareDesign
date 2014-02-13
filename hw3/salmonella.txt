@@ -1,0 +1,55 @@
+Sarah Walters
+SD Homework 3
+2014-02-07
+
+---
+SETUP
+
+1) 5 longest-uncoded-ORF trials: 756, 747, 696, 735, 843. Average: 755.
+2) Obtained 5 open ORFs from DNA which have len > 755 and are therefore
+likely to be gene-encoding
+
+---
+BLAST
+
+ORF 1: (MGIF...)
+- 100% surface presentation of antigens (Salmonella enterica // Typhimurium)
+- 100% ATP synthase SpaL (Salmonella enterica, mostly, + 1 Salmonella bongori)
+- 94% invasion protein invC (Salmonella enterica // Typhimurium)
+
+- invasion protein is also 89% positive Providencia alcalifaciens
+- ATP synthase SpaL is also 78% positive Escherichia coli
+
+ORF 2: (MGDV...)
+- 100% needle length control protein (Salmonella enterica // Typhimurium)
+- 99% antigen presentation protein SpaN (Salmonella enterica)
+- 99% invasion protein invJ (Salmonella enterica)
+- 99% hypothetical protein SPAB_03595 (Salmonella enterica // Paratyphi)
+- 99% secretion host injection/negative regulator protein YopD (Salmonella enterica)
+
+ORF 3: (MFYA...)
+- 100% needle complex export protein (Salmonella enterica // Typhimurium, LT2)
+- 99% type 3 secretion system protein SpaR (Salmonella enterica // Schwarzengrund
+- 99% secretory protein (Salmonella enterica // Paratyphi)
+
+ORF 4: (MSLR...)
+- 100% surface presentation of antigens protein SpaO (Salmonella enterica // Typhimurium)
+- 99% surface presentation of antigens protein (Salmonella enterica // Paratyphi)
+- 99% secretion system protein SpaO (Salmonella enterica)
+- 99% surface presentation of antigens protein (Salmonella enterica // Heidelberg)
+
+ORF 5: (MSSN...)
+- 100% surface presentation of antigens protein SpaS (Salmonella enterica // Typhimurium)
+- 99% type 3 secretion system protein SpaS (Salmonella enterica)
+
+---
+CONCLUSIONS
+
+It's overwhelmingly clear that this is Salmonella enterica DNA. All of the best
+matches are of serovar Typhimurium, but several others (Schwarzengrund,
+Paratyphi, Heidelberg) also match closely, signifying that although they have
+slightly different DNA all of these serotypes produce some similar proteins.
+Several different species of bacteria (E. coli, P. alcalifaciens) produce
+similarly-functioning proteins with sections similar to parts of ORF 1,
+implying that some of these proteins exhibit not only cross-serotype but also
+cross-genus similarities.
