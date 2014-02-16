@@ -7,10 +7,7 @@ Created on Tue Feb 11 11:34:57 2014
 
 # you do not have to use these particular modules, but they may help
 from random import randint
-from math import sin
-from math import cos
-from math import pi
-from math import floor
+from math import sin, cos, pi
 import Image
 
 def build_random_function(min_depth, max_depth):
@@ -80,9 +77,9 @@ def evaluate_random_function(f, x, y):
 
 def draw_image(x_size, y_size, filename):
     # using nested lists
-    red = build_random_function(10, 12)
-    green = build_random_function(5, 7)
-    blue = build_random_function(7, 9)
+    red = build_random_function(3,5)
+    green = build_random_function(4,6)
+    blue = build_random_function(3,5)
     
     # using lambdas
     #red = build_random_lambda(10,12)
