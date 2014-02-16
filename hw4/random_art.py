@@ -21,7 +21,7 @@ def build_random_function(min_depth, max_depth):
         Output: nested-list representation of the function, for use with evaluate_random_function.
     """
     
-    if max_depth == 2:
+    if max_depth == 1:
         no_args = [["x"], ["y"]]
         a = no_args[randint(0,1)]
         b = no_args[randint(0,1)]
@@ -42,13 +42,34 @@ def build_random_function(min_depth, max_depth):
     return f[i]
     
 
+def build_random_lambda(min_depth, max_depth):
+    prod = lambda a,b: a*b
+    sin_pi = lambda a,b: sin(pi*a)
+    cos_pi = lambda a,b: cos(pi*a)
+    x = lambda a,b: a
+    y = lambda a,b: b
+    
+    f = [prod, sin_pi, cos_pi, x, y]
+    
+    if max_depth == 1:
+        i = randint(3,4)
+        return lambda a,b: f[i](a,b)
+    else:
+        if min_depth > 1:
+            i = randint(0,2)
+        else:
+            i = randint(0,4)
+        g = build_random_lambda(min_depth-1, max_depth-1)
+        h = build_random_lambda(min_depth-1, max_depth-1)
+        return lambda a,b: f[i](g(a,b),h(a,b))
+
+
 def evaluate_random_function(f, x, y):
     # your doc string goes here
     if f[0] == "x":
         return x
     elif f[0] == "y":
         return y
-    
     elif f[0] == "sin_pi":
         return sin(pi*evaluate_random_function(f[1], x, y))
     elif f[0] == "cos_pi":
@@ -58,9 +79,15 @@ def evaluate_random_function(f, x, y):
         
 
 def draw_image(x_size, y_size, filename):
-    red = build_random_function(10, 15)
-    green = build_random_function(10, 15)
-    blue = build_random_function(10, 15)
+    # using nested lists
+    red = build_random_function(10, 12)
+    green = build_random_function(5, 7)
+    blue = build_random_function(7, 9)
+    
+    # using lambdas
+    #red = build_random_lambda(10,12)
+    #green = build_random_lambda(5,7)
+    #blue = build_random_lambda(7,9)
     
     im = Image.new("RGB",(x_size, y_size))
     pixels = im.load()
@@ -70,13 +97,19 @@ def draw_image(x_size, y_size, filename):
             x = scale_down(i)
             y = scale_down(j)
             
+            # using nested lists
             r = scale_up(evaluate_random_function(red, x, y))
             g = scale_up(evaluate_random_function(green, x, y))
             b = scale_up(evaluate_random_function(blue, x, y))
+            
+            # using lambdas
+            #r = scale_up(red(x,y))
+            #g = scale_up(green(x,y))
+            #b = scale_up(blue(x,y))
             pixels[i, j] = (r, g, b)
             
     im.save(filename)
-    print "shown"
+    print "done"
             
             
 def scale_down(x):
