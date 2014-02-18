@@ -12,3 +12,7 @@ def compare(x,y):
     else: return -1
     
 print compare(2, 3)
+
+'''
+Excellent work; no comments here :-)
+'''

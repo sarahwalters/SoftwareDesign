@@ -27,3 +27,7 @@ def print_grid(rows, cols, w, h):
     print make_row('+ ', '- ', w, rows)
 
 print_grid(4, 4, 4, 4) # (rows, columns, box width, box height)
+
+'''
+Great generalization; wonderful work!
+'''

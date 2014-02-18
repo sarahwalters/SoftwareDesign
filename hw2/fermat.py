@@ -22,3 +22,7 @@ def run_fermat():
     check_fermat(int(a), int(b), int(c), int(n))
     
 run_fermat()
+
+'''
+Perfect; no comments
+'''
