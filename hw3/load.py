@@ -58,6 +58,7 @@ def search_genome_simple(query):
     genome = load_salmonella_genome()
     matchNames = []
     for entry in genome:
+        # checking for length seems redundant? There didn't seem to be any output that had length < 3
          if len(entry) == 3 and query in entry[2]:
             matchNames.append(entry[1])
     return matchNames
@@ -87,12 +88,24 @@ def search_genome_levenshtein_substrings(query, threshold, substrLen):
         if len(entry) == 3:
             peptide = entry[2]
             for i in range(len(peptide)-substrLen+1):
+
                 if computeLevenshtein(query, peptide[i:i+substrLen])[-1][-1] <= threshold:
                     matchNames.append(entry[1])
                     break
     return matchNames
 
 
+'''
+Nice work! You could have imported this directly from levenshtein,py by calling:
+
+import levenshtein 
+
+levenshtein.computeLevenshtein()
+
+or
+
+from levenshtein import *
+'''
 def computeLevenshtein(s1, s2):
     len1 = len(s1)
     len2 = len(s2)

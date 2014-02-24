@@ -34,7 +34,14 @@ def coding_strand_to_AA(dna):
             for c in codons[i]:
                 if codon == c: protein += aa[i]
     return protein
-        
+
+'''
+Excellent logic; a suggestion for shorthand within your step for loop:
+
+codon = dna[3*step : 3*(step+1)]
+for i in range(len(codons)):
+    if codon in codons[i]: protein += aa[i]
+'''
 
 def coding_strand_to_AA_unit_tests():
     """ Unit tests for the coding_strand_to_AA function """
@@ -58,7 +65,14 @@ def get_reverse_complement(dna):
         
 def lookup(char):
     return {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}.get(char, '') #.get throws out any non-ATGC letter
-    
+
+'''
+Great use of auxiliary functions. However, it is imperative that you define
+your aux function before you need to use it
+
+def lookup(char): ...
+def get_reverse_complement(dna): ...
+'''
     
 def get_reverse_complement_unit_tests():
     """ Unit tests for the get_complement function """
@@ -100,7 +114,7 @@ def find_all_ORFs_oneframe(dna):
         returns: a list of non-nested ORFs
     """
     proteins = []
-    frame = 0
+    frame = 0           # knit-picky: naming this frame makes no sense to me..I may be missing something obvious?
     while frame < len(dna)/3:
         if dna[3*frame:3*(frame+1)] == "ATG":
             protein = rest_of_ORF(dna[3*frame:])
@@ -126,7 +140,7 @@ def find_all_ORFs(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     """
-    frame1 = find_all_ORFs_oneframe(dna[0:])
+    frame1 = find_all_ORFs_oneframe(dna[0:])    # same as: find_all_ORFs_oneframe(dna)
     frame2 = find_all_ORFs_oneframe(dna[1:])
     frame3 = find_all_ORFs_oneframe(dna[2:])
     return frame1+frame2+frame3
@@ -208,3 +222,7 @@ def gene_finder(dna, threshold):
         if len(orf) > threshold:
             aboveThreshold.append(coding_strand_to_AA(orf))
     return aboveThreshold
+
+'''
+Great work, Sarah! There are some syntactic comments I made that might be useful to keep in mind. 
+'''
