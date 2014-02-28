@@ -13,6 +13,8 @@ from nltk.corpus import cmudict
 
 d = cmudict.dict()
 
+#isSlantRhyme using memoized levenshtein
+
 def isRhyme(word1, word2, n): # n describes number of syllables which should rhyme
     rhymePart1 = rhymePart(word1, n)
     rhymePart2 = rhymePart(word2, n)
