@@ -29,10 +29,13 @@ def get_word_count_dict(filename):
     words = get_words_from_book(filename)
     analysis = {}
     for word in words:
+        
+        # kind of TOTC-specific?
         if word[0] == '_':
             word = word[1:]
         if len(word) > 0 and word[-1] == '_':
             word = word[:-1]
+            
         if word.lower() in analysis:
             analysis[word.lower()] += 1
         else:

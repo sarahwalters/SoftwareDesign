@@ -13,17 +13,17 @@ from nltk.corpus import cmudict
 
 d = cmudict.dict()
 
-#isSlantRhyme using memoized levenshtein
 
-def isRhyme(word1, word2, n): # n describes number of syllables which should rhyme
+def isRhyme(word1, word2, n, t): # n = number of syllables to rhyme, t = threshold. t = 0 yields exact rhymes.
     rhymePart1 = rhymePart(word1, n)
     rhymePart2 = rhymePart(word2, n)
-    for pronunciation in rhymePart1:
-        if pronunciation in rhymePart2:
-            return True
-    return False
-    
-    
+    for p1 in rhymePart1:
+        for p2 in rhymePart2:
+            if levenshtein_distance(p1, p2) <= t:
+                return True
+    return False    
+   
+   
 def rhymePart(word, n): # check for too-big n
     allSyls = allSyllables(word)
     bigEnough = []
@@ -97,5 +97,22 @@ def getSyllables(pronunciation):
         i += 1
     return syllables
     
+    
 def isVowel(phoneme):
     return phoneme[-1].isdigit()
+    
+    
+levenshteinKnown = {('', ''):0} # memoized
+def levenshtein_distance(s1, s2):
+    comparison = (s1, s2)
+    if comparison in levenshteinKnown:
+        return levenshteinKnown[comparison]
+    
+    if len(s1) == 0:
+        res = len(s2)
+    elif len(s2) == 0:
+        res = len(s1) 
+    else:
+        res = min([int(s1[0] != s2[0]) + levenshtein_distance(s1[1:],s2[1:]), 1+levenshtein_distance(s1[1:],s2), 1+levenshtein_distance(s1,s2[1:])])
+    levenshteinKnown[(s1, s2)] = res
+    return res
