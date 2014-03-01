@@ -13,6 +13,19 @@ from nltk.corpus import cmudict
 
 d = cmudict.dict()
 
+def stresses(word):
+    pSet = []
+    sylSets = allSyllables(word)
+    for sylSet in sylSets:
+        p = ''
+        for syl in sylSet:
+            if '1' in syl or '2' in syl:
+                p += '1'
+            elif '0' in syl:
+                p += '0'
+        pSet.append(p)
+    return pSet
+                
 
 def isRhyme(word1, word2, n, t): # n = number of syllables to rhyme, t = threshold. t = 0 yields exact rhymes.
     rhymePart1 = rhymePart(word1, n)
