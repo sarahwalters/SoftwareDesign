@@ -50,7 +50,7 @@ def build_rhymeCollection(wordList):
             rhymes[word] = [word]
 
 
-def endRhymes(N): # N is matrix describing how many sets and number of matches per set
+def rhymeSets(N): # N is matrix describing how many sets and number of matches per set
     allRhymes = []
     for s in range(len(N)):
         thisRhyme = []
@@ -69,17 +69,64 @@ def endRhymes(N): # N is matrix describing how many sets and number of matches p
             thisRhyme.append(wordChoice)
         allRhymes.append(thisRhyme)
     return allRhymes
+
+def endRhymes(N, endQuery):    
+    endPatterns = []
+    for i in range(len(endQuery)):
+        if endQuery[i:] in stw:
+            endPatterns += stw[endQuery[i:]]
+    build_rhymeCollection(endPatterns)
+    return rhymeSets(N)
     
+
+def limerick(endRhymes):
+    mLong = '01001001'
+    mShort = '01001'
     
+    left = [mLong, mLong, mLong, mShort, mShort]
+    lines = ['', '', '', '', '']
+    ends = []
+    
+    ### ENDS OF LINES - RHYMING
+    for i in range(0,3):
+        word = endRhymes[0][i]
+        stresses = wts[word]
+        left[i] = left[i][:len(left[i])-len(stresses[0])] # not necessarily 0...mult prons
+        ends.append(word)
+    
+    for i in range(3,5):
+        word = endRhymes[1][i-3]
+        stresses = wts[word]
+        left[i] = left[i][:len(left[i])-len(stresses[0])] # once again, mult prons.
+        ends.append(word)
+    
+    for i in range(5):
+        while len(left[i]) > 0:
+            keyChoice = choice(stw.keys())
+            if left[i][0:len(keyChoice)] == keyChoice:
+                word = choice(stw[keyChoice])
+                stresses = wts[word]
+                left[i] = left[i][len(stresses[0]):]
+                if len(lines[i]) > 0:
+                    lines[i] = lines[i] + ' ' + word
+                else:
+                    lines[i] = word
+                    
+    
+    for i in range(5):
+        lines[i] = lines[i] + ' ' + ends[i]
+    print lines[0]
+    print lines[1]
+    print lines[3]
+    print lines[4]
+    print lines[2]
+            
+        
+
 if __name__ == "__main__":
     filename = 'twoCities.txt'
     build_wts()
     build_stw()
     
-    endPatterns = []
-    endQuery = '01001'
-    for i in range(len(endQuery)):
-        if endQuery[i:] in stw:
-            endPatterns += stw[endQuery[i:]]
-    build_rhymeCollection(endPatterns)
-    print endRhymes([3, 2])
+    x = endRhymes([3, 2], '01001')
+    limerick(x)

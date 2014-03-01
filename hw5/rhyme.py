@@ -5,10 +5,6 @@ Created on Thu Feb 27 21:49:55 2014
 @author: swalters
 """
 
-# limerick
-# order words by frequency from book, Wikipedia
-# stresses - 0 1 0 1 0
-
 from nltk.corpus import cmudict
 
 d = cmudict.dict()
