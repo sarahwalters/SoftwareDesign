@@ -36,8 +36,7 @@ def isRhyme(word1, word2, n, t):
     rhymePart2 = rhymePart(word2, n)
     for p1 in rhymePart1: # rhymePart1 and rhymePart2 are lists - iterate to check for matching elements
         for p2 in rhymePart2:
-            if levenshtein_distance(p1, p2) <= t: # allows for some degree of slant rhyme if t != 0
-                return True
+            if levenshtein_distance(p1, p2) <= t: return True # allows for some degree of slant rhyme if t != 0
     return False
    
    
@@ -71,6 +70,7 @@ def levenshtein_distance(s1, s2):
         input: s1, s2 (strings)
         output: edit distance between them (int)
     '''
+    
     comparison = (s1, s2)
     if comparison in levenshteinKnown:
         return levenshteinKnown[comparison]

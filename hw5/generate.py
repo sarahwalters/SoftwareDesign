@@ -13,6 +13,7 @@ filename = ''
 wts = {} # maps from word to stress pattern
 stw = {} # maps from stress pattern to words
 rhymes = {}
+    
 
 ### dictionary building functions
 def build_wts():
@@ -22,7 +23,9 @@ def build_wts():
     '''
     counts = get_word_count_dict(filename) # maps from word to num of appearances in filename
     for key in counts:
-        wts[key] = stresses(key) # stresses('dictionary') produces '1010'
+        keyStress = stresses(key)
+        if len(keyStress) > 0 and len(keyStress[0]) > 0:
+            wts[key] = keyStress # stresses('dictionary') produces '1010'
 
 
 def build_stw():
@@ -101,6 +104,8 @@ def endRhymeSets(N, endQuery):
     
 
 def poem(lines, endQuery):
+    poemRes = ''
+    
     # extract rhyme scheme
     rhymeScheme = {}
     for line in lines:
@@ -109,7 +114,7 @@ def poem(lines, endQuery):
         else:
             rhymeScheme[line[1]] = 1
 
-    # produce rhymes  
+    # produce rhymes
     N = []
     for match in rhymeScheme:
         N.append(rhymeScheme[match])
@@ -138,12 +143,59 @@ def poem(lines, endQuery):
                 line[0] = line[0][len(stresses[0]):]
                 line[2] = line[2] + ' ' + word
         line[2] = (line[2] + ' ' + line[1]).strip().capitalize()
-        print line[2]
+        poemRes = poemRes + '\n' + line[2]
+    return poemRes.strip()
     
-    
+def title(poem):
+    pList = poem.split()
+    word1 = choice(pList).capitalize()
+    word2 = choice(pList).capitalize()
+    while word2 == word1:
+        word2 = choice(pList).capitalize()
+    return word1 + ' ' + word2
+     
+def sonnet():
+    print 'Composing poem...'
+    s = '01'*5
+    r = 'ABABCDCDEFEFGG'
+    lines = []
+    for char in r:
+        lines.append([s, char])
+    return poem(lines, s)
+        
+
+def limerick():
+    print 'Composing poem...'
+    l = '01001001'
+    s = '01001'
+    lines = []
+    for i in range(2): lines.append([l, 'A'])
+    for i in range(2): lines.append([s, 'B'])
+    lines.append([l, 'A'])
+    return poem(lines, s)
+  
+  
+'''MAIN METHOD - EDIT THIS'''
 if __name__ == "__main__":
+    ################################
+    '''CHANGE THIS FILENAME'''      
     filename = 'twoCities.txt'
+    ################################
+    
+    # dictionary generation
     build_wts()
     build_stw()
     
-    poem([['01001001','A'], ['01001001','A'], ['01001', 'B'], ['01001', 'B'], ['01001001', 'A']], '0101')
+    ################################
+    '''CHOOSE ONE TYPE'''           
+    #p = limerick()
+    p = sonnet()
+    ################################
+    
+    # output formatting
+    print ''
+    t = title(p)
+    print t
+    print '-'*len(t)
+    print p
+    print ' '*15 + "--Robot Frost, 'Poems Ipsum' 2014"
