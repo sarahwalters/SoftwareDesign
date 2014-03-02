@@ -58,7 +58,7 @@ def rhymePart(word, n):
     for sylSet in bigEnough:
         part = ''
         for i in range(1, n+1):
-            part = sylSet[-i] + rhymePart
+            part = sylSet[-i] + part
             while part[0] not in ['A', 'E', 'I', 'O', 'U']: # only keep first char if not consonant
                 part = part[1:]
             toRhyme.append(part)

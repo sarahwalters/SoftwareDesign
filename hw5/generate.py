@@ -100,55 +100,50 @@ def endRhymeSets(N, endQuery):
     return rhymeSets(N)
     
 
-def limerick(endRhymes):
-    '''need to refactor/generalize and document'''
-    mLong = '01001001'
-    mShort = '01001'
+def poem(lines, endQuery):
+    # extract rhyme scheme
+    rhymeScheme = {}
+    for line in lines:
+        if line[1] in rhymeScheme:
+            rhymeScheme[line[1]] += 1
+        else:
+            rhymeScheme[line[1]] = 1
+
+    # produce rhymes  
+    N = []
+    for match in rhymeScheme:
+        N.append(rhymeScheme[match])
+    rhymeSets = endRhymeSets(N, endQuery)
     
-    left = [mLong, mLong, mLong, mShort, mShort]
-    lines = ['', '', '', '', '']
-    ends = []
+    # replace numbers in rhymeScheme with sets of rhymes
+    for schemeChar in rhymeScheme:
+        for rhymeSet in rhymeSets:
+            if len(rhymeSet) == rhymeScheme[schemeChar]:
+                rhymeScheme[schemeChar] = rhymeSet
+                rhymeSets.remove(rhymeSet)
+            break
     
-    ### ENDS OF LINES - RHYMING
-    for i in range(0,3):
-        word = endRhymes[0][i]
+    # put rhymes into ends of lines
+    for line in lines:
+        word = rhymeScheme[line[1]].pop()
         stresses = wts[word]
-        left[i] = left[i][:len(left[i])-len(stresses[0])] # not necessarily 0...mult prons
-        ends.append(word)
-    
-    for i in range(3,5):
-        word = endRhymes[1][i-3]
-        stresses = wts[word]
-        left[i] = left[i][:len(left[i])-len(stresses[0])] # once again, mult prons.
-        ends.append(word)
-    
-    for i in range(5):
-        while len(left[i]) > 0:
+        line[0] = line[0][:len(line[0])-len(stresses[0])] # not necessarily 0...mult prons  
+        line[1] = word
+        line.append('')
+        while len(line[0]) > 0:
             keyChoice = choice(stw.keys())
-            if left[i][0:len(keyChoice)] == keyChoice:
+            if line[0][0:len(keyChoice)] == keyChoice:
                 word = choice(stw[keyChoice])
                 stresses = wts[word]
-                left[i] = left[i][len(stresses[0]):]
-                if len(lines[i]) > 0:
-                    lines[i] = lines[i] + ' ' + word
-                else:
-                    lines[i] = word
-                    
+                line[0] = line[0][len(stresses[0]):]
+                line[2] = line[2] + ' ' + word
+        line[2] = (line[2] + ' ' + line[1]).strip().capitalize()
+        print line[2]
     
-    for i in range(5):
-        lines[i] = lines[i] + ' ' + ends[i]
-    print lines[0].capitalize()
-    print lines[1].capitalize()
-    print lines[3].capitalize()
-    print lines[4].capitalize()
-    print lines[2].capitalize()
-            
-        
-
+    
 if __name__ == "__main__":
     filename = 'twoCities.txt'
     build_wts()
     build_stw()
     
-    x = endRhymeSets([3, 2], '01001')
-    limerick(x)
+    poem([['01001001','A'], ['01001001','A'], ['01001', 'B'], ['01001', 'B'], ['01001001', 'A']], '0101')
