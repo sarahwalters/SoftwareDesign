@@ -5,114 +5,72 @@ Created on Thu Feb 27 21:49:55 2014
 @author: swalters
 """
 
-from nltk.corpus import cmudict
-
+from nltk.corpus import cmudict # word-to-phoneme lookup
 d = cmudict.dict()
 
+### stress/rhyme methods
 def stresses(word):
+    ''' produces list of binary strings describing all phonetic stress patterns of word
+        input: word (string)
+        output: list of strings consisting of 1's and 0's
+    '''
     pSet = []
     sylSets = allSyllables(word)
     for sylSet in sylSets:
         p = ''
         for syl in sylSet:
-            if '1' in syl or '2' in syl:
-                p += '1'
-            elif '0' in syl:
-                p += '0'
+            if '1' in syl or '2' in syl: # in cmudict phonemes, 1 correlates to primary stress, 2 to secondary,
+                p += '1' # (label both primary and secondary stress as stressed)
+            elif '0' in syl: # and 0 to unstressed
+                p += '0'# (label unstressed as such)
         pSet.append(p)
     return pSet
                 
 
-def isRhyme(word1, word2, n, t): # n = number of syllables to rhyme, t = threshold. t = 0 yields exact rhymes.
+def isRhyme(word1, word2, n, t): 
+    ''' checks whether two words rhyme to n syllables with matching threshold t (t=0 checks exact rhyme)
+        inputs: word1, word2 (strings), n, t (ints)
+        output: boolean
+    '''
     rhymePart1 = rhymePart(word1, n)
     rhymePart2 = rhymePart(word2, n)
-    for p1 in rhymePart1:
+    for p1 in rhymePart1: # rhymePart1 and rhymePart2 are lists - iterate to check for matching elements
         for p2 in rhymePart2:
-            if levenshtein_distance(p1, p2) <= t:
+            if levenshtein_distance(p1, p2) <= t: # allows for some degree of slant rhyme if t != 0
                 return True
-    return False    
+    return False
    
    
-def rhymePart(word, n): # check for too-big n
+def rhymePart(word, n):
+    ''' returns the part of a word which would match the equivalent part for a rhyming word
+        --> the nth vowel from the end and everything after it
+        input: word (string) and n (int), number of syllables to consider
+        output: list of possible strings to rhyme (same thing for various pronunciations)
+    '''
     allSyls = allSyllables(word)
     bigEnough = []
     toRhyme = []
     
     for sylSet in allSyls:
-        if len(sylSet) >= n:
+        if len(sylSet) >= n:  # to avoid indexing errors later
             bigEnough.append(sylSet)
     
     for sylSet in bigEnough:
-        rhymePart = ''
+        part = ''
         for i in range(1, n+1):
-            rhymePart = sylSet[-i] + rhymePart
-            while rhymePart[0] not in ['A', 'E', 'I', 'O', 'U']:
-                rhymePart = rhymePart[1:]
-            toRhyme.append(rhymePart)
+            part = sylSet[-i] + rhymePart
+            while part[0] not in ['A', 'E', 'I', 'O', 'U']: # only keep first char if not consonant
+                part = part[1:]
+            toRhyme.append(part)
     return toRhyme
     
-
-def allSyllables(word):
-    s = []
-    if word in d:
-        pronunciations = d[word]
-        for p in pronunciations:
-            s.append(getSyllables(p))
-    return s
-
-
-def getSyllables(pronunciation):
-    length = len(pronunciation)
-    syllables = [] # for storing list of syllables as they are built
-    current = '' # for storing current syllable as it is built
     
-    i = 0 # while loop allows for multiple steps per loop
-    while i < length:
-        # establish current phoneme ph0, next phoneme ph1, and next next phoneme ph2
-        ph0 = pronunciation[i]
-        
-        if length - i > 1: ph1 = pronunciation[i+1]
-        else: ph1 = ' ' # leave as just a blank space if no next phoneme (ie ph0 is last)
-        
-        if length - i > 2: ph2 = pronunciation[i+2]
-        else: ph2 = ' ' # if ph1 is last
-         
-        # for testing
-        """
-        print 'ph0: ' + ph0
-        print 'ph1: ' + ph1
-        print 'ph2: ' + ph2
-        print '--------'
-        """
-        
-        current += ph0 # add ph0 to current syllable
-
-        if isVowel(ph0):
-            # check whether or not to add one following consonant (if at least 2 follow vowel ph0)
-            # or multiple following consonants (if this vowel ph0 is the last one)
-            if not isVowel(ph1) and not isVowel(ph2): # do two consonants follow ph0?
-                current += ph1
-                i += 1
-                
-                rest = pronunciation[i+1:] # check whether to add all remaining consonants
-                addRest = True
-                for ph in rest:
-                    if isVowel(ph): # if there is another vowel
-                        addRest = False
-                if addRest == True:
-                    for ph in rest: current += ph
-            syllables.append(current)
-            current = ''
-        i += 1
-    return syllables
-    
-    
-def isVowel(phoneme):
-    return phoneme[-1].isdigit()
-    
-    
-levenshteinKnown = {('', ''):0} # memoized
+levenshteinKnown = {('', ''):0} # for memoization
 def levenshtein_distance(s1, s2):
+    ''' recursively computes edit distance between two strings
+        input: s1, s2 (strings)
+        output: edit distance between them (int)
+    '''
     comparison = (s1, s2)
     if comparison in levenshteinKnown:
         return levenshteinKnown[comparison]
@@ -125,3 +83,68 @@ def levenshtein_distance(s1, s2):
         res = min([int(s1[0] != s2[0]) + levenshtein_distance(s1[1:],s2[1:]), 1+levenshtein_distance(s1[1:],s2), 1+levenshtein_distance(s1,s2[1:])])
     levenshteinKnown[(s1, s2)] = res
     return res
+
+
+### syllable methods
+def allSyllables(word):
+    s = []
+    if word in d:
+        pronunciations = d[word]
+        for p in pronunciations:
+            s.append(getSyllables(p))
+    return s
+
+
+def getSyllables(pronunciation):
+    ''' splits a set of phonemes into syllables
+        input: pronunciation (list of phoneme strings)
+        output: list of syllables
+    '''
+    length = len(pronunciation)
+    syllables = []
+    current = ''
+    
+    i = 0 # use while loop for multiple steps/loop
+    while i < length:
+        # establish current phoneme ph0, next phoneme ph1, and next next phoneme ph2
+        ph0 = pronunciation[i]
+        
+        if length - i > 1: ph1 = pronunciation[i+1]
+        else: ph1 = ' ' # single space if no next phoneme (ie ph0 is last phoneme)
+        
+        if length - i > 2: ph2 = pronunciation[i+2]
+        else: ph2 = ' ' # if ph1 is last phoneme
+        
+        current += ph0
+
+        if isVowel(ph0):
+            # add exactly one following consonant if at least 2 consonants follow vowel ph0
+            # also add all remaining consonants if vowel ph0 is the last vowel
+            
+            # do two consonants follow ph0?
+            if not isVowel(ph1) and not isVowel(ph2): 
+                current += ph1
+                i += 1
+                
+                # is ph0 the last vowel?
+                rest = pronunciation[i+1:]
+                addRest = True
+                for ph in rest:
+                    if isVowel(ph):
+                        addRest = False # because there is another vowel
+                if addRest == True:
+                    for ph in rest: current += ph
+                    
+            # syllable finished; move to the next
+            syllables.append(current.strip())
+            current = '' 
+        i += 1
+    return syllables
+    
+    
+def isVowel(phoneme):
+    ''' checks whether phoneme is in cmudict set of vowels
+        input: phoneme (string)
+        output: boolean
+    '''
+    return phoneme[-1].isdigit() # format of all cmudict vowel phonemes

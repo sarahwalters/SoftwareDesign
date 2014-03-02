@@ -14,20 +14,22 @@ wts = {} # maps from word to stress pattern
 stw = {} # maps from stress pattern to words
 rhymes = {}
 
-### build functions
+### dictionary building functions
 def build_wts():
-    counts = get_word_count_dict(filename)
-
-    countSum = 0
+    ''' builds a dictionary which maps from word to binary-format stress pattern(s)
+        input: no parameters. Uses global variable filename
+        output: no return. Sets global variable wts
+    '''
+    counts = get_word_count_dict(filename) # maps from word to num of appearances in filename
     for key in counts:
-        countSum += counts[key]
-
-    for key in counts:
-        wts[key] = stresses(key)
-    return wts
+        wts[key] = stresses(key) # stresses('dictionary') produces '1010'
 
 
 def build_stw():
+    ''' combs through wts to build a dictionary which maps from stress pattern to words
+        input: no parameters. Uses global variable wts
+        output: no return. Sets global variable stw
+    '''
     for word in wts:
         stresses = wts[word]
         for stress in stresses:
@@ -36,50 +38,70 @@ def build_stw():
                     stw[stress].append(word)
             else:
                 stw[stress] = [word]
-    return stw
     
     
-def build_rhymeCollection(wordList):
+def build_rhymes(wordList):
+    ''' builds a dictionary which maps from representative word to all rhymes in wordList
+        input: wordList (format ['word1', 'word2', 'word3', ...])
+        output: no return. Sets global variable rhymes
+    '''
     for word in wordList:
         rhymed = False
         for key in rhymes:
-            if isRhyme(key, word, 1, 0):
+            if isRhyme(key, word, 1, 0): # only one-syllable (1) exact (0) rhymes for now
                 rhymes[key].append(word)
                 rhymed = True
         if rhymed == False:
             rhymes[word] = [word]
 
 
+### functionality functions
 def rhymeSets(N): # N is matrix describing how many sets and number of matches per set
-    allRhymes = []
-    for s in range(len(N)):
-        thisRhyme = []
-        n = N[s] # number of matches for this particular set
-        keyChoice = choice(rhymes.keys())
+    ''' produces a set of n rhyming words for each integer n in the list N
+        input: N (list of integers)
+        output: list of sets of rhyming words
+    '''
+    allRhymeSets = []
+    for i in range(len(N)):
+        thisRhymeSet = []
+        n = N[i] # number of matches to find for this particular set
+        
+        # pick set of words to pull from
         counter = 0
-        while len(rhymes[keyChoice]) < n and counter < 10:
+        keyChoice = choice(rhymes.keys())
+        while len(rhymes[keyChoice]) < n and counter < 10: # to prevent for looking forever for n which is bigger than any which exist
             keyChoice = choice(rhymes.keys())
             counter += 1
         if counter == 10:
-            return 'Element ' + str(s) + ' in query too large'
+            raise RuntimeError('Element ' + str(i) + ' in query is probably too large')
+            
+        # pull correct number of words from chosen set
         for i in range(n):
             wordChoice = choice(rhymes[keyChoice])
-            while wordChoice in thisRhyme:
+            while wordChoice in thisRhymeSet: # avoid duplicity 
                 wordChoice = choice(rhymes[keyChoice])
-            thisRhyme.append(wordChoice)
-        allRhymes.append(thisRhyme)
-    return allRhymes
+            thisRhymeSet.append(wordChoice)
+            
+        allRhymeSets.append(thisRhymeSet)
+        
+    return allRhymeSets
 
-def endRhymes(N, endQuery):    
+
+def endRhymeSets(N, endQuery): 
+    ''' exactly like rhymeSets, but chooses words which fit at the end of syllable pattern endQuery
+        input: N (list of integers), endQuery (string of 1's and 0's)
+        output: list of sets of rhyming words which have stress patterns matching end of endQuery
+    '''
     endPatterns = []
-    for i in range(len(endQuery)):
-        if endQuery[i:] in stw:
+    for i in range(len(endQuery)): # run through substrings of endQuery which end at the end
+        if endQuery[i:] in stw: # use all which exist in stw for largest possible variety of words
             endPatterns += stw[endQuery[i:]]
-    build_rhymeCollection(endPatterns)
+    build_rhymes(endPatterns)
     return rhymeSets(N)
     
 
 def limerick(endRhymes):
+    '''need to refactor/generalize and document'''
     mLong = '01001001'
     mShort = '01001'
     
@@ -115,11 +137,11 @@ def limerick(endRhymes):
     
     for i in range(5):
         lines[i] = lines[i] + ' ' + ends[i]
-    print lines[0]
-    print lines[1]
-    print lines[3]
-    print lines[4]
-    print lines[2]
+    print lines[0].capitalize()
+    print lines[1].capitalize()
+    print lines[3].capitalize()
+    print lines[4].capitalize()
+    print lines[2].capitalize()
             
         
 
@@ -128,5 +150,5 @@ if __name__ == "__main__":
     build_wts()
     build_stw()
     
-    x = endRhymes([3, 2], '01001')
+    x = endRhymeSets([3, 2], '01001')
     limerick(x)
