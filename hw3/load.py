@@ -67,7 +67,7 @@ def search_genome_levenshtein(query, threshold):
     genome = load_salmonella_genome()
     matchNames = []
     for entry in genome:
-        if len(entry) == 3 and computeLevenshtein(query, entry[2]) <= threshold:
+        if len(entry) == 3 and computeLevenshtein(query, entry[2])[-1][-1] <= threshold:
                 matchNames.append(entry[1])
     return matchNames
     
