@@ -131,7 +131,9 @@ def poem(lines, endQuery):
     for line in lines:
         word = rhymeScheme[line[1]].pop()
         stresses = wts[word]
-        line[0] = line[0][:len(line[0])-len(stresses[0])] # not necessarily 0...mult prons  
+        # NOTE: using len(stresses[0]) is not a perfect assumption - 
+        # some words have pronunciations with diff. syllable numbers 
+        line[0] = line[0][:len(line[0])-len(stresses[0])] 
         line[1] = word
         line.append('')
         while len(line[0]) > 0:
@@ -139,7 +141,7 @@ def poem(lines, endQuery):
             if line[0][0:len(keyChoice)] == keyChoice:
                 word = choice(stw[keyChoice])
                 stresses = wts[word]
-                line[0] = line[0][len(stresses[0]):] # again, not necessarily 0
+                line[0] = line[0][len(stresses[0]):] # once again, len(stresses[0])
                 line[2] = line[2] + ' ' + word
         line[2] = (line[2] + ' ' + line[1]).strip().capitalize()
         poemRes = poemRes + '\n' + line[2]
