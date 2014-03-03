@@ -89,7 +89,6 @@ def rhymeSets(N): # N is matrix describing how many sets and number of matches p
         
     return allRhymeSets
 
-
 def endRhymeSets(N, endQuery): 
     ''' exactly like rhymeSets, but chooses words which fit at the end of syllable pattern endQuery
         input: N (list of integers), endQuery (string of 1's and 0's)
@@ -140,7 +139,7 @@ def poem(lines, endQuery):
             if line[0][0:len(keyChoice)] == keyChoice:
                 word = choice(stw[keyChoice])
                 stresses = wts[word]
-                line[0] = line[0][len(stresses[0]):]
+                line[0] = line[0][len(stresses[0]):] # again, not necessarily 0
                 line[2] = line[2] + ' ' + word
         line[2] = (line[2] + ' ' + line[1]).strip().capitalize()
         poemRes = poemRes + '\n' + line[2]
@@ -179,7 +178,7 @@ def limerick():
 if __name__ == "__main__":
     ################################
     '''CHANGE THIS FILENAME'''      
-    filename = 'twoCities.txt'
+    filename = 'crimePunishment.txt'
     ################################
     
     # dictionary generation
