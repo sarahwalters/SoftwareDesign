@@ -2,7 +2,7 @@
 """
 Created on Tue Feb 11 11:34:57 2014
 
-@author: pruvolo
+@author: pruvolo # Sarah, you wrote this.  Take credit!
 """
 
 # you do not have to use these particular modules, but they may help
@@ -39,11 +39,10 @@ def build_random_function(min_depth, max_depth):
     
     ### choose function and return
     if min_depth > 1:
-        i = randint(0, 2)
+        i = randint(0, 2) # I believe you want (0, 4) here since your square and cube functions take inputs too.
     else:
         i = randint(0, 6)
     return f[i]
-    
 
 def build_random_lambda(min_depth, max_depth):
     """ Recursively constructs a function composed of simpler functions
