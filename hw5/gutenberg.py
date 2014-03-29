@@ -40,6 +40,7 @@ def get_words_from_book(filename):
     return wordList
 
 
+# this is essentially a histogram?
 def get_word_count_dict(filename):
     ''' describes a text by how many times each word it uses occurs
         input: filename (string) in format 'name.txt'

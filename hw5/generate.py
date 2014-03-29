@@ -199,4 +199,4 @@ if __name__ == "__main__":
     print t
     print '-'*len(t)
     print p
-    print ' '*15 + "--Robot Frost, 'Poems Ipsum' 2014"
+    print ' '*15 + "--Robot Frost, 'Poems Ipsum' 2014"  # excellent author name

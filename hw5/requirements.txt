@@ -1,0 +1,3 @@
+pyyaml==3.10
+# couldn't find the right version of nltk, so not specifying one
+nltk

@@ -53,6 +53,13 @@ def rhymePart(word, n):
     for sylSet in allSyls:
         if len(sylSet) >= n:  # to avoid indexing errors later
             bigEnough.append(sylSet)
+    '''
+    I think above loop needs either more documentation or a different approach.
+    Look into Python's built-in filter function for cleaner code. Using filter will tell 
+    the audience that you're filtering the original list (allSyls) to only the data you 
+    care about, which are only the syllables that are long enough, given n. I was confused by
+    what you meant by "big enough" until I saw the second `for` loop.
+    '''
     
     for sylSet in bigEnough:
         part = ''
@@ -71,6 +78,7 @@ def levenshtein_distance(s1, s2):
         output: edit distance between them (int)
     '''
     
+    # What if known levenshtein includes (s2, s1) but not (s1, s2)?
     comparison = (s1, s2)
     if comparison in levenshteinKnown:
         return levenshteinKnown[comparison]
@@ -134,13 +142,18 @@ def getSyllables(pronunciation):
                         addRest = False # because there is another vowel
                 if addRest == True:
                     for ph in rest: current += ph
+                    # or just: current += "".join(rest)
                     
             # syllable finished; move to the next
             syllables.append(current.strip())
             current = '' 
         i += 1
     return syllables
-    
+
+'''
+Awesome documentation on the above function. It would have been hard to follow
+your code without them.
+'''
     
 def isVowel(phoneme):
     ''' checks whether phoneme is in cmudict set of vowels
